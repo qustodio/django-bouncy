@@ -21,14 +21,13 @@ import base64
 import re
 import pem
 import logging
-import six
 
 from OpenSSL import crypto
 from django.conf import settings
 from django.core.cache import caches
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils import timezone
-from django.utils.encoding import smart_bytes
+from django.utils.encoding import smart_bytes, force_bytes, force_text
 import dateutil.parser
 
 from django_bouncy import signals
@@ -99,7 +98,7 @@ def verify_notification(data):
     """
     pemfile = grab_keyfile(data['SigningCertURL'])
     cert = crypto.load_certificate(crypto.FILETYPE_PEM, pemfile)
-    signature = base64.decodestring(six.b(data['Signature']))
+    signature = base64.decodestring(force_bytes(data['Signature']))
 
     if data['Type'] == "Notification":
         hash_format = NOTIFICATION_HASH_FORMAT
@@ -108,7 +107,7 @@ def verify_notification(data):
 
     try:
         crypto.verify(
-            cert, signature, six.b(hash_format.format(**data)), 'sha1')
+            cert, signature, force_bytes(hash_format.format(**data)), 'sha1')
     except crypto.Error:
         return False
     return True
@@ -147,7 +146,7 @@ def approve_subscription(data):
     )
 
     # Return a 200 Status Code
-    return HttpResponse(six.u(result))
+    return HttpResponse(force_text(result))
 
 
 def clean_time(time_string):
