@@ -98,7 +98,7 @@ def verify_notification(data):
     """
     pemfile = grab_keyfile(data['SigningCertURL'])
     cert = crypto.load_certificate(crypto.FILETYPE_PEM, pemfile)
-    signature = base64.decodestring(force_bytes(data['Signature']))
+    signature = base64.decodebytes(force_bytes(data['Signature']))
 
     if data['Type'] == "Notification":
         hash_format = NOTIFICATION_HASH_FORMAT
