@@ -27,7 +27,7 @@ from django.conf import settings
 from django.core.cache import caches
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils import timezone
-from django.utils.encoding import smart_bytes, force_bytes, force_text
+from django.utils.encoding import smart_bytes, force_bytes, force_str
 import dateutil.parser
 
 from django_bouncy import signals
@@ -146,7 +146,7 @@ def approve_subscription(data):
     )
 
     # Return a 200 Status Code
-    return HttpResponse(force_text(result))
+    return HttpResponse(force_str(result))
 
 
 def clean_time(time_string):
