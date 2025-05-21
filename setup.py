@@ -24,7 +24,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django>=1.11',
+        'Django>=5.2.1',
         'python-dateutil>=2.1',
         'pyopenssl>=0.13.1',
         'pem>=16.0.0',
