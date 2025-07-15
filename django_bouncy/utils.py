@@ -22,7 +22,8 @@ import re
 import pem
 import logging
 
-from OpenSSL import crypto
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.serialization import load_pem_public_key
 from django.conf import settings
 from django.core.cache import caches
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -97,7 +98,7 @@ def verify_notification(data):
     Returns True if verfied, False if not verified
     """
     pemfile = grab_keyfile(data['SigningCertURL'])
-    cert = crypto.load_certificate(crypto.FILETYPE_PEM, pemfile)
+    cert = load_pem_public_key(smart_bytes(pemfile))
     signature = base64.decodebytes(force_bytes(data['Signature']))
 
     if data['Type'] == "Notification":
@@ -106,9 +107,12 @@ def verify_notification(data):
         hash_format = SUBSCRIPTION_HASH_FORMAT
 
     try:
-        crypto.verify(
-            cert, signature, force_bytes(hash_format.format(**data)), 'sha1')
-    except crypto.Error:
+        cert.verify(
+            signature=signature,
+            data=force_bytes(hash_format.format(**data)),
+            algorithm=hashes.SHA256(),
+        )
+    except Exception:
         return False
     return True
 
