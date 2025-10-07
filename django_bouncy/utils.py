@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Utility functions for the django_bouncy app"""
+from cryptography.hazmat.primitives.asymmetric import padding
+
 try:
     import urllib2 as urllib
 except ImportError:
@@ -114,6 +116,7 @@ def verify_notification(data):
             signature=signature,
             data=force_bytes(hash_format.format(**data)),
             algorithm=hashes.SHA256(),
+            padding=padding.PKCS1v15(),
         )
     except Exception as e:
         print(e)
