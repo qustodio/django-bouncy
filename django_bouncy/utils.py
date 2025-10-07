@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Utility functions for the django_bouncy app"""
-from cryptography.hazmat.primitives.asymmetric import padding
 
 try:
     import urllib2 as urllib
@@ -26,7 +25,7 @@ import logging
 
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.serialization import load_pem_public_key
+from cryptography.hazmat.primitives.asymmetric import padding
 from django.conf import settings
 from django.core.cache import caches
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -115,7 +114,7 @@ def verify_notification(data):
         public_key.verify(
             signature=signature,
             data=force_bytes(hash_format.format(**data)),
-            algorithm=hashes.SHA256(),
+            algorithm=hashes.SHA1(),  # SNS uses SHA1
             padding=padding.PKCS1v15(),
         )
     except Exception as e:
