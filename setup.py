@@ -25,8 +25,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.11',
+        'cryptography>=44.0.1',
         'python-dateutil>=2.1',
-        'pyopenssl>=0.13.1',
         'pem>=16.0.0',
     ],
     keywords="aws ses sns seacucumber boto",
